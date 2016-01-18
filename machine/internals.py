@@ -19,30 +19,35 @@ IR = 0x0
 
 # XXX
 def LOAD1(operands): # 12 bits as list
+    global registers, memory
     R = operands[:4]
     XY = operands[4:]
     registers[util.getValFromBits(R)] = memory[util.getValFromBits(XY)]
 
 # XXX
 def LOAD2(operands):
+    global registers
     R = operands[:4]
     XY = operands[4:]
     registers[util.getValFromBits(R)] = util.getValFromBits(XY)
 
 # XXX
 def STORE(operands):
+    global memory, registers
     R = operands[:4]
     XY = operands[4:]
     memory[util.getValFromBits(XY)] = registers[util.getValFromBits(R)]
 
 # XXX
 def MOVE(operands): # first four bits ignored
+    global registers
     R = operands[4:8]
     S = operands[8:]
     registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)]
 
 # XXX
 def ADD1(operands): # two's complement
+    global registers
     R = operands[:4]
     S = operands[4:8]
     T = operands[8:]
@@ -50,6 +55,7 @@ def ADD1(operands): # two's complement
 
 # XXX
 def ADD2(operands): # floating-point
+    global registers
     R = operands[:4]
     S = operands[4:8]
     T = operands[8:]
@@ -57,6 +63,7 @@ def ADD2(operands): # floating-point
 
 # XXX
 def OR(operands):
+    global registers
     R = operands[:4]
     S = operands[4:8]
     T = operands[8:]
@@ -64,6 +71,7 @@ def OR(operands):
 
 # XXX
 def AND(operands):
+    global registers
     R = operands[:4]
     S = operands[4:8]
     T = operands[8:]
@@ -71,6 +79,7 @@ def AND(operands):
 
 # XXX
 def XOR(operands):
+    global registers
     R = operands[:4]
     S = operands[4:8]
     T = operands[8:]
@@ -78,12 +87,14 @@ def XOR(operands):
 
 # XXX
 def ROTATE(operands): # bits 8-12 ignored
+    global registers
     R = operands[:4]
     X = operands[8:]
     print('ROTATE R' + str(util.getValFromBits(R)) + ' ' + str(util.getValFromBits(X)))
 
 # XXX
 def JUMP(operands):
+    global registers, PC
     R = operands[:4]
     XY = operands[4:]
     if registers[util.getValFromBits(R)] == registers[0]:
@@ -94,6 +105,7 @@ def HALT(operands): # operands unused
 
 # meta function (not part of Appendix C's machine)
 def PRINT(operands):
+    global memory, registers
     R = operands[:4] # register to probe
     XY = operands[4:] # memory cell to probe
     print('R' + str(util.getValFromBits(R)) +

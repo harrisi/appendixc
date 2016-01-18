@@ -38,9 +38,11 @@ def breakpoint(label):
     print('IR: 0x%X' % internals.IR)
     print('CU: ' + str(internals.controlunit))
     while True:
-        res = input('(C)ontinue, (M)emory, (R)egisters, (H)alt:\n> ')
+        res = input('(C)ontinue, (M)emory, (R)egisters, (H)alt:\n(C)> ')
+        # if res is '':
+        #     continue
         if res in 'cC':
-            return
+            break
         elif res in 'mM':
             print(internals.memory)
             continue
