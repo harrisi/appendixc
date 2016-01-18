@@ -1,4 +1,5 @@
 import sys
+import re
 
 # Gets integer value from list of bits
 def getValFromBits(bits):
@@ -16,6 +17,9 @@ def readFromFile(loc):
     res = []
     with open(loc, 'r') as f:
         for line in f:
-            res.append(line.replace("\n", "")[:2])
-            res.append(line.replace("\n", "")[2:])
+            line = re.sub(';;.*', '', line)
+            line = re.sub('[\s+]', '', line)
+            if line:
+                res.append(line[:2])
+                res.append(line[2:])
     return res
