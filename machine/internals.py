@@ -17,35 +17,35 @@ PC = 0x0
 # is set to the full 16-bit instruction to be executed by the CPU
 IR = 0x0
 
-# XXX
+# 0x1
 def LOAD1(operands): # 12 bits as list
     global registers, memory
     R = operands[:4]
     XY = operands[4:]
     registers[util.getValFromBits(R)] = memory[util.getValFromBits(XY)]
 
-# XXX
+# 0x2
 def LOAD2(operands):
     global registers
     R = operands[:4]
     XY = operands[4:]
     registers[util.getValFromBits(R)] = util.getValFromBits(XY)
 
-# XXX
+# 0x3
 def STORE(operands):
     global memory, registers
     R = operands[:4]
     XY = operands[4:]
     memory[util.getValFromBits(XY)] = registers[util.getValFromBits(R)]
 
-# XXX
+# 0x4
 def MOVE(operands): # first four bits ignored
     global registers
     R = operands[4:8]
     S = operands[8:]
     registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)]
 
-# XXX
+# 0x5
 def ADD1(operands): # two's complement
     global registers
     R = operands[:4]
@@ -53,7 +53,7 @@ def ADD1(operands): # two's complement
     T = operands[8:]
     registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)] + registers[util.getValFromBits(T)]
 
-# XXX
+# 0x6
 def ADD2(operands): # floating-point
     global registers
     R = operands[:4]
@@ -61,7 +61,7 @@ def ADD2(operands): # floating-point
     T = operands[8:]
     registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)] + registers[util.getValFromBits(T)]
 
-# XXX
+# 0x7
 def OR(operands):
     global registers
     R = operands[:4]
@@ -69,7 +69,7 @@ def OR(operands):
     T = operands[8:]
     registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)] | registers[util.getValFromBits(T)]
 
-# XXX
+# 0x8
 def AND(operands):
     global registers
     R = operands[:4]
@@ -77,7 +77,7 @@ def AND(operands):
     T = operands[8:]
     registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)] & registers[util.getValFromBits(T)]
 
-# XXX
+# 0x9
 def XOR(operands):
     global registers
     R = operands[:4]
@@ -85,14 +85,25 @@ def XOR(operands):
     T = operands[8:]
     registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)] ^ registers[util.getValFromBits(T)]
 
-# XXX
+# 0xA
 def ROTATE(operands): # bits 8-12 ignored
     global registers
     R = operands[:4]
     X = operands[8:]
-    print('ROTATE R' + str(util.getValFromBits(R)) + ' ' + str(util.getValFromBits(X)))
+    print(R)
+    print(X)
+    def rotateHelper(l, n):
+        if n == 0:
+            return l
+        else:
+            return rotateHelper([l[-1]] + l[:-1], n - 1)
+    registers[util.getValFromBits(R)] = util.getValFromBits(
+        rotateHelper(
+            util.intToBits(registers[util.getValFromBits(R)], 8),
+            util.getValFromBits(X)))
+    # print('ROTATE R' + str(util.getValFromBits(R)) + ' ' + str(util.getValFromBits(X)))
 
-# XXX
+# 0xB
 def JUMP(operands):
     global registers, PC
     R = operands[:4]
@@ -100,9 +111,11 @@ def JUMP(operands):
     if registers[util.getValFromBits(R)] == registers[0]:
         PC = util.getValFromBits(XY)
 
+# 0xC
 def HALT(operands): # operands unused
     sys.exit('HALT')
 
+# 0xD
 # meta function (not part of Appendix C's machine)
 def PRINT(operands):
     global memory, registers

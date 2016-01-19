@@ -12,10 +12,7 @@ def fetch():
     internals.PC += 2
 
 def decode():
-    bits = [] # bad
-    for bit in format(internals.IR, '016b'): # bad (?)
-        bits.append(bit)
-    bits = [int(bit) for bit in bits] # bad
+    bits = util.intToBits(internals.IR, 16)
     internals.controlunit = (bits[:4], bits[4:])
     # internals.controlunit.operator = bits[:4]
     # internals.controlunit.operand = bits[4:]

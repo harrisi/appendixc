@@ -1,7 +1,10 @@
-254A    ;; LOAD R5 #4A
-26F1    ;; LOAD R6 #F1
+2505    ;; LOAD R5 #4A
+260A    ;; LOAD R6 #F1
 5 0 56  ;; ADD R0 R5 R6
 306E    ;; STORE R0 6E
-;; D06E ;; PRINT R0 6E
-B0A0    ;; JUMP R0 A0
+D06E    ;; PRINT R0 6E
+A 0 F 2 ;; ROTATE R0 #2 (third hex digit (F) is ignored)
+306F    ;; STORE R0 6F
+D06F	;; PRINT R0 6F
+;; B0A0 ;; JUMP R0 A0 (infinite loop)
 C000    ;; HALT

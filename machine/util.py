@@ -23,3 +23,9 @@ def readFromFile(loc):
                 res.append(line[:2])
                 res.append(line[2:])
     return res
+
+def intToBits(val, b):
+    bits = [] # bad
+    for bit in format(val, '0' + str(b) + 'b'): # bad (?)
+        bits.append(bit)
+    return [int(bit) for bit in bits] # bad
