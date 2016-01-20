@@ -3,9 +3,9 @@ from machine import util
 import collections
 
 # registers 0-F
-registers = {x: 0 for x in range(0xF + 1)}
+registers = collections.OrderedDict([(x, 0) for x in range(0xF + 1)])
 # memory cells 0-255
-memory = {x: 0 for x in range(2 ** 8)}
+memory = collections.OrderedDict([(x, 0) for x in range(2 ** 8)])
 ControlUnit = collections.namedtuple('ControlUnit',
                                      ['operator', 'operand'])
 controlunit = (None, None)
@@ -46,6 +46,7 @@ def MOVE(operands): # first four bits ignored
     registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)]
 
 # 0x5
+# XXX
 def ADD1(operands): # two's complement
     global registers
     R = operands[:4]
@@ -54,6 +55,7 @@ def ADD1(operands): # two's complement
     registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)] + registers[util.getValFromBits(T)]
 
 # 0x6
+# XXX
 def ADD2(operands): # floating-point
     global registers
     R = operands[:4]
@@ -90,8 +92,6 @@ def ROTATE(operands): # bits 8-12 ignored
     global registers
     R = operands[:4]
     X = operands[8:]
-    print(R)
-    print(X)
     def rotateHelper(l, n):
         if n == 0:
             return l
@@ -123,8 +123,8 @@ def PRINT(operands):
     XY = operands[4:] # memory cell to probe
     print('R' + str(util.getValFromBits(R)) +
           ': {:#010b}'.format(registers[util.getValFromBits(R)]) +
-          '\nCell 0x%X' % util.getValFromBits(XY) +
-          ': 0x%X' % memory[util.getValFromBits(XY)])
+          '\nCell 0x{:02X}'.format(util.getValFromBits(XY)) +
+          ': 0x{:02X}'.format(memory[util.getValFromBits(XY)]))
 
 # operator v-table
 opDict = {0x1: LOAD1, # LOAD R XY (contents)

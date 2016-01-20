@@ -1,5 +1,5 @@
-2505    ;; LOAD R5 #4A
-260A    ;; LOAD R6 #F1
+2505    ;; LOAD R5 #05
+260A    ;; LOAD R6 #10
 5 0 56  ;; ADD R0 R5 R6
 306E    ;; STORE R0 6E
 D06E    ;; PRINT R0 6E

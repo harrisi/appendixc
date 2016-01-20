@@ -3,6 +3,7 @@ import collections
 from machine import internals
 from machine import util
 import argparse
+import pprint
 
 def fetch():
     instruction = ("0x" +
@@ -14,10 +15,6 @@ def fetch():
 def decode():
     bits = util.intToBits(internals.IR, 16)
     internals.controlunit = (bits[:4], bits[4:])
-    # internals.controlunit.operator = bits[:4]
-    # internals.controlunit.operand = bits[4:]
-    # operator = bits[:4] # first four bits
-    # operand = bits[4:] # last 12 bits
 
 def execute():
     f = internals.opDict[
@@ -36,15 +33,21 @@ def breakpoint(label):
     print('CU: ' + str(internals.controlunit))
     while True:
         res = input('(C)ontinue, (M)emory, (R)egisters, (H)alt:\n(C)> ')
-        # if res is '':
-        #     continue
         if res in 'cC':
             break
         elif res in 'mM':
-            print(internals.memory)
+            pprint.pprint(collections.OrderedDict(
+                [('0x{:02X}'.format(h),
+                  '0x{:02X}'.format(int('0x' + str(v), 16)))
+                 for (h, v) in internals.memory.items()
+                 if not(v is 0)]))
             continue
         elif res in 'rR':
-            print(internals.registers)
+            pprint.pprint(collections.OrderedDict(
+                [('0x{:02X}'.format(h),
+                  '0x{:02X}'.format(v))
+                 for (h, v) in internals.registers.items()
+                 if not(v is 0)]))
             continue
         elif res in 'hH':
             sys.exit('(breakpoint) HALT')
@@ -63,7 +66,6 @@ if __name__ == '__main__':
                         action="store_true")
     args = parser.parse_args()
     if args.start:
-        # print('0x%X' % args.start) # bad
         internals.PC = args.start
     if args.program:
         internals.storeProgramInMemory(args.program)
@@ -73,10 +75,7 @@ if __name__ == '__main__':
     while True:
         breakpoint('pre fetch')
         fetch()
-        # breakpoint('post fetch')
         breakpoint('pre decode')
         decode()
-        # breakpoint('post decode')
         breakpoint('pre execute')
         execute()
-        # breakpoint('post execute')
