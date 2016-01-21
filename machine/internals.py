@@ -1,5 +1,6 @@
 import sys
 from machine import util
+# from machine import data
 import collections
 
 # registers 0-F
@@ -18,14 +19,14 @@ PC = 0x0
 IR = 0x0
 
 # 0x1
-def LOAD1(operands): # 12 bits as list
+def LOAD(operands): # 12 bits as list
     global registers, memory
     R = operands[:4]
     XY = operands[4:]
     registers[util.getValFromBits(R)] = memory[util.getValFromBits(XY)]
 
 # 0x2
-def LOAD2(operands):
+def LOADV(operands):
     global registers
     R = operands[:4]
     XY = operands[4:]
@@ -47,7 +48,7 @@ def MOVE(operands): # first four bits ignored
 
 # 0x5
 # XXX
-def ADD1(operands): # two's complement
+def ADD(operands): # two's complement
     global registers
     R = operands[:4]
     S = operands[4:8]
@@ -56,7 +57,7 @@ def ADD1(operands): # two's complement
 
 # 0x6
 # XXX
-def ADD2(operands): # floating-point
+def ADDF(operands): # floating-point
     global registers
     R = operands[:4]
     S = operands[4:8]
@@ -127,22 +128,22 @@ def PRINT(operands):
           ': 0x{:02X}'.format(memory[util.getValFromBits(XY)]))
 
 # operator v-table
-opDict = {0x1: LOAD1, # LOAD R XY (contents)
-          0x2: LOAD2, # LOAD R XY (value)
-          0x3: STORE, # STORE R XY
-          0x4: MOVE,
-          0x5: ADD1, # ADD R ST (two's complement)
-          0x6: ADD2, # ADD R ST (floating-point)
-          0x7: OR,
-          0x8: AND,
-          0x9: XOR,
-          0xA: ROTATE,
-          0xB: JUMP,
-          0xC: HALT,
-          0xD: PRINT,
+opDict = {0x1: LOAD,   # LOAD R XY (contents)
+          0x2: LOADV,  # LOADV R #XY (value)
+          0x3: STORE,  # STORE R XY
+          0x4: MOVE,   # MOVE R R
+          0x5: ADD,    # ADD R ST (two's complement)
+          0x6: ADDF,   # ADDF R ST (floating-point)
+          0x7: OR,     # OR R R R
+          0x8: AND,    # AND R R R
+          0x9: XOR,    # XOR R R R
+          0xA: ROTATE, # ROTATE R #
+          0xB: JUMP,   # JUMP R XY
+          0xC: HALT,   # HALT
+          0xD: PRINT,  # PRINT R XY
           0xE: None,
           0xF: None}
-
+    
 def storeProgramInMemory(loc):
     instructions = util.readFromFile(loc)
     i = 0

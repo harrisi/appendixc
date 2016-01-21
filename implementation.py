@@ -64,13 +64,21 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--debug",
                         help="add debug points between each step of machine cycle",
                         action="store_true")
+    parser.add_argument("-a", "--assembly",
+                        help="read assembly rather than machine code")
     args = parser.parse_args()
     if args.start:
         internals.PC = args.start
     if args.program:
         internals.storeProgramInMemory(args.program)
+    elif args.assembly:
+        foo = util.readAsm(args.assembly)
+        fooMachine = args.assembly.split('.')[0] + '.machine'
+        util.spitMachine(foo, fooMachine)
+        internals.storeProgramInMemory(fooMachine)
     else:
         internals.storeProgramInMemory("out.machine")
+    
     DEBUG = args.debug
     while True:
         breakpoint('pre fetch')
