@@ -40,7 +40,6 @@ def readAsm(loc):
             inRes = []
             for word in line.split():
                 inRes.append(word)
-                # inRes.append('EOL')
             if inRes:
                 res.append(inRes)
     return res
@@ -64,30 +63,29 @@ asmDict = {'LOAD': 0x1,
 def spitMachine(asm, asmFile='out.iasm'):
     res = []
     out = ''
+    orig = ''
     openType = 'w' if os.path.isfile(asmFile) else 'a'
     with open(asmFile, openType) as f:
         for i in asm:
             for j in i:
                 if j in asmDict:
-                    # print('function: ' + hex(asmDict[j]))
                     res.append(hex(asmDict[j])[2:])
                 else:
                     try:
-                        # print('value: ' + format(int(j, 0), '{:#04x')[2:])
-                        # res.append(int(j, 0))
                         res.append(format(int(j, 0), '{:#04x}')[2:])
                     except ValueError:
-                        # continue
                         match = re.search('[0-9a-fA-F]+', j)
                         if match:
-                            # print('register: ' + str(match.group()))
                             res.append(match.group())
             for item in res:
                 if not(item in 'cC'):
                     out = out + item.upper()
                 else:
                     out = out + item.upper() + '000'
-            f.write(out + '\n')
-            # print(out)
+            for item in i:
+                orig = orig + ' ' + item
+            orig = orig.strip()
+            f.write(out + ' ;; ' + orig + '\n')
             res.clear()
             out = ''
+            orig = ''
