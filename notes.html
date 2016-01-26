@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="file:///home/ian/.emacs.d/customizations/github-pandoc.css">
+</head>
+<body>
+<h1 id="safe-set">Safe set</h1>
+<pre><code>* I need a better way to set registers values. I suppose it needs to be agnostic as to how it is stored internally and then just choose how to display or use them at will. Any addition will just truncate to 8 bits.
+* Oh, swaggy. intToBits already truncates, so I can just always use `util.intToBits(n, b)` to keep it at `b` bits internally. This should work alright.
+* This means I just need to have a couple functions added for interpreting bit values in twos complement and floating point (which also needs a helper function for excess notation).</code></pre>
+<h1 id="mass-storage">Mass storage</h1>
+<pre><code>* This will (to be &quot;nice&quot;) require a full bus for peripheral communication. This will definitely require a bit more reading and studying. A much simpler solution would to just have mass storage be a dictionary of infinite size that I can write to. However, this wouldn&#39;t be very helpful as time moves on. Ideally I would have a number of classes implementing various storage devices, each having their own timing and everything. This would be useful as the project continues.</code></pre>
+<h1 id="peripherals">Peripherals</h1>
+<pre><code>* Peripherals will go along with the above. I&#39;ll need a bus and device drivers and everything for this. This will probably be a lot of work, but would be very interesting.</code></pre>
+<h1 id="operating-system">Operating system</h1>
+<pre><code>* A full blown (well, not really; &quot;A very simplistic&quot; would be a better description) operating system would be pretty sweet. I would start to need to either write reasonably complex systems for a dispatcher or scheduler to have any use, or I could have quantums based on some amount of machine cycles instead, but this also comes with it&#39;s fair share of problems.</code></pre>
+</body>
+</html>
