@@ -2,6 +2,7 @@ import sys
 import collections
 from machine import internals
 from machine import util
+from machine import registers
 import argparse
 import pprint
 
