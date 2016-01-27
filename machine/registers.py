@@ -1,9 +1,12 @@
 import sys
+from machine import util
 
 class Registers(dict):
     # This should be a "safe" set; registers can't have values out of
     # range (-128, 127), and can only be 0x1-0xF
     def __setitem__(self, key, item):
+        if type(key) is list:
+            key = util.getValFromBits(key)
         if type(key) != int:
             sys.exit("""ERROR: Register must be integer value.
 Value given: {}""".format(repr(key)))
@@ -14,6 +17,8 @@ Value given: {}""".format(repr(key)))
         self.__dict__[key] = item
 
     def __getitem__(self, key):
+        if type(key) is list:
+            key = util.getValFromBits(key)
         return self.__dict__[key]
 
     # Would be nice to have a better display output for debugging.
@@ -68,3 +73,5 @@ Value given: {}""".format(repr(key)))
 
     def __unicode__(self):
         return unicode(repr(self.__dict__))
+
+    bits = 8
