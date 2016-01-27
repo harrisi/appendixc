@@ -1,6 +1,7 @@
 import sys
 import re
 import os
+# from machine import registers
 
 # Gets integer value from list of bits
 def getValFromBits(bits):
@@ -25,7 +26,10 @@ def readFromFile(loc):
                 res.append(line[2:])
     return res
 
-def intToBits(val, b):
+def intToBits(val, b=8):
+    """
+    Returns list of binary data representing integer value.
+    """
     bits = [] # bad
     for bit in format(val, '0' + str(b) + 'b'): # bad (?)
         bits.append(bit)
@@ -89,3 +93,27 @@ def spitMachine(asm, asmFile='out.iasm'):
             res.clear()
             out = ''
             orig = ''
+
+def safeSet(storage, key, value):
+    storage[key] = value[-(storage.bits):]
+
+def twosComplement(val, length=8):
+    bits = intToBits(val, length)
+    res = []
+    swap = False
+    if bits[0] == 0:
+        return val
+    for i in bits[::-1]:
+        if swap:
+            if i is 0:
+                res.insert(0, 1)
+                continue
+            else:
+                res.insert(0, 0)
+                continue
+        if i is 0:
+            res.insert(0, i)
+        else:
+            res.insert(0, i)
+            swap = True
+    return -(getValFromBits(res))

@@ -1,10 +1,11 @@
 import sys
 from machine import util
 # from machine import data
+from machine import registers
 import collections
 
 # registers 0-F
-registers = collections.OrderedDict([(x, 0) for x in range(0xF + 1)])
+registers = registers.Registers([(x, 0) for x in range(0xF + 1)])
 # memory cells 0-255
 memory = collections.OrderedDict([(x, 0) for x in range(2 ** 8)])
 ControlUnit = collections.namedtuple('ControlUnit',
@@ -30,6 +31,9 @@ def LOADV(operands):
     global registers
     R = operands[:4]
     XY = operands[4:]
+    # util.safeSet(registers,
+    #              util.getValFromBits(R),
+    #              util.getValFromBits(XY))
     registers[util.getValFromBits(R)] = util.getValFromBits(XY)
 
 # 0x3
@@ -53,7 +57,8 @@ def ADD(operands): # two's complement
     R = operands[:4]
     S = operands[4:8]
     T = operands[8:]
-    registers[util.getValFromBits(R)] = registers[util.getValFromBits(S)] + registers[util.getValFromBits(T)]
+    registers[R] = (util.twosComplement(registers[S]) +
+                    util.twosComplement(registers[T]))
 
 # 0x6
 # XXX
